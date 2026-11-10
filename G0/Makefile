@@ -22,10 +22,10 @@ CC           := $(PREFIX)gcc
 OBJCOPY      := $(PREFIX)objcopy
 OBJDUMP      := $(PREFIX)objdump
 NM           := $(PREFIX)nm
-SPIKE        ?= /opt/riscv/bin/spike
+SPIKE        ?= $(HOME)/riscv_tools/bin/spike
 PYTHON       ?= python3
-IVERILOG     ?= iverilog
-VVP          ?= vvp
+SIMULATOR    ?= xrun
+XRUN         ?= xrun
 
 # Simulation parameters
 RESET_PC     := 0x80000000
@@ -120,18 +120,19 @@ $(SPIKE_LOG): $(ELF)
 	$(SPIKE) --isa=rv32im_zicsr --log-commits -l --log=$@ $<
 
 # ------------------------------------------------------------------------------
-# 3. Run RTL Simulation (Icarus Verilog + vvp)
+# 3. Run RTL Simulation (Cadence Xcelium / xrun)
 # ------------------------------------------------------------------------------
 rtl: $(RTL_LOG)
 
-$(RTL_SIM_VVP): $(RTL_SRCS) $(TB_SRC)
-	@echo "==> [RTL] Compiling RTL and testbench with $(IVERILOG)..."
-	$(IVERILOG) -g2012 -o $@ $(RTL_SRCS) $(TB_SRC)
-
-$(RTL_LOG): $(RTL_SIM_VVP) $(IMEM_HEX) $(DMEM_HEX) $(ELF)
+$(RTL_LOG): $(RTL_SRCS) $(TB_SRC) $(IMEM_HEX) $(DMEM_HEX) $(ELF)
 	@TOHOST_ADDR=$$($(NM) $(ELF) | grep -w "tohost" | awk '{print $$1}'); \
-	echo "==> [RTL] Running RTL simulation (tohost=0x$$TOHOST_ADDR, max_cycles=$(MAX_CYCLES))..."; \
-	$(VVP) $(RTL_SIM_VVP) +imem_hex=$(IMEM_HEX) +dmem_hex=$(DMEM_HEX) +tohost_addr=$$TOHOST_ADDR +max_cycles=$(MAX_CYCLES) +log_file=$@
+	echo "==> [RTL] Compiling and running with $(XRUN) (tohost=0x$$TOHOST_ADDR, max_cycles=$(MAX_CYCLES))..."; \
+	mkdir -p $(LOGS_DIR); \
+	$(XRUN) -64bit -sv $(RTL_SRCS) $(TB_SRC) -top tb_top \
+	    +imem_hex=$(IMEM_HEX) +dmem_hex=$(DMEM_HEX) \
+	    +tohost_addr=$$TOHOST_ADDR +max_cycles=$(MAX_CYCLES) \
+	    +log_file=$@ -access +rc -covoverwrite \
+	    -l $(LOGS_DIR)/xrun_rtl.log
 
 # ------------------------------------------------------------------------------
 # 4. Target Execution Rules (Produces compare_<target_name>.log)

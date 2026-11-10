@@ -1,6 +1,6 @@
 #!/bin/tcsh
 source /home/install/cshrc
-source .venv/bin/activate.csh
+source ../.venv/bin/activate.csh
 setenv RISCV_INSTALL "$HOME/riscv_tools"
 setenv PATH "$RISCV_INSTALL/bin:$PATH"
 setenv RISCV_TOOLCHAIN "$RISCV_INSTALL"
