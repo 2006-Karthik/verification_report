@@ -184,7 +184,7 @@ module rv32m_assertions (
     property p_rem_sign_invariant;
         logic [31:0] saved_dividend;
         (valid_in && (funct3 == 3'b110) && (rs2 != 32'b0), saved_dividend = rs1)
-            |-> ##[1:36] (valid_out && (result != 32'b0) |-> (result[31] == saved_dividend[31]));
+            |-> ##[1:36] valid_out && ((result == 32'b0) || (result[31] == saved_dividend[31]));
     endproperty
     a_rem_sign_invariant: assert property (p_rem_sign_invariant)
         else $error("[SVA VIOLATION #14] Remainder sign does not match dividend sign!");

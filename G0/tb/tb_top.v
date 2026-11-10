@@ -84,6 +84,8 @@ module tb_top();
     integer log_fd;
     reg [8*256:1] log_file;
     reg dump_vcd;
+    reg halt_pending;
+    reg [2:0] halt_countdown;
 
     // Track stores across MEM -> WB pipeline stage
     reg [31:0] store_wdata_W;
@@ -128,9 +130,6 @@ module tb_top();
     wire [31:0] cur_instr = imem.mem_array[(cur_pc_w - 32'h80000000) >> 2];
     wire [6:0]  cur_opcode = cur_instr[6:0];
     wire        is_store_op = (cur_opcode == 7'b0100011);
-
-    reg halt_pending;
-    reg [2:0] halt_countdown;
 
     always @(negedge clk) begin
         if (rst_n) begin

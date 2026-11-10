@@ -71,7 +71,7 @@ module rv32m_mul (
                 .zero  (enc_zero [i]),
                 .two   (enc_two  [i])
             );
-            pp_gen #() u_ppg (
+            pp_gen u_ppg (
                 .neg   (enc_neg  [i]),
                 .zero  (enc_zero [i]),
                 .two   (enc_two  [i]),

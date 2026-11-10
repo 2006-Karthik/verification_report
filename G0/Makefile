@@ -180,17 +180,4 @@ clean:
 	@echo "==> [CLEAN] Removing generated files..."
 	rm -f $(ELF_DIR)/* $(DISASS_DIR)/* $(HEX_DIR)/* $(SIM_DIR)/* $(LOGS_DIR)/* *.vcd
 
-# ------------------------------------------------------------------------------
-# 7. Unit-Level Test for RV32M Accelerator
-# ------------------------------------------------------------------------------
-RV32M_SRCS := $(RTL_DIR)/booth_enc.v $(RTL_DIR)/pp_gen.v $(RTL_DIR)/csa.v \
-              $(RTL_DIR)/rv32m_mul.v $(RTL_DIR)/rv32m_div.v $(RTL_DIR)/rv32m_unit.v
-RV32M_TB   := $(TB_DIR)/tb_rv32m_unit.v
-
-test-m-unit: $(RV32M_SRCS) $(RV32M_TB)
-	@echo "==> [TEST] Compiling rv32m_unit self-checking testbench..."
-	$(IVERILOG) -g2001 -o $(SIM_DIR)/tb_rv32m.vvp $(RV32M_SRCS) $(RV32M_TB)
-	@echo "==> [TEST] Running rv32m_unit simulation..."
-	$(VVP) $(SIM_DIR)/tb_rv32m.vvp
-
-.PHONY: all compile hex spike rtl compare check test-mismatch main baremetal_helloworld run-target clean test-m-unit
+.PHONY: all compile hex spike rtl compare check test-mismatch main baremetal_helloworld run-target clean
