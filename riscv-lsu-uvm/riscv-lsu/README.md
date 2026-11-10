@@ -87,14 +87,3 @@ export LM_LICENSE_FILE=5280@14.139.1.126
 All artifacts (log, `xcelium.d`, `cov_work`, waves) are written to
 `scripts/sim/<test>_<seed>/`. Clean everything with `./run_xrun.sh clean`.
 
-### 2. Questa / ModelSim (`vsim`)
-```bash
-cd scripts
-vsim -do compile.do
-```
-
-### 3. Synopsys VCS / Python Regression Runner
-```bash
-cd scripts
-python3 run_regression.py
-```
