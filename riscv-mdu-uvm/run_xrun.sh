@@ -54,7 +54,14 @@ xrun -64bit -sv \
   $UVM_FLAGS \
   +incdir+"$SCRIPT_DIR" \
   +incdir+"$SCRIPT_DIR/rtl" \
-  -f "$SCRIPT_DIR/filelist.f" \
+  +incdir+"$SCRIPT_DIR/tb" \
+  "$SCRIPT_DIR/rtl/booth_enc.v" \
+  "$SCRIPT_DIR/rtl/csa.v" \
+  "$SCRIPT_DIR/rtl/pp_gen.v" \
+  "$SCRIPT_DIR/rtl/rv32m_mul.v" \
+  "$SCRIPT_DIR/rtl/rv32m_div.v" \
+  "$SCRIPT_DIR/rtl/rv32m_unit.v" \
+  "$SCRIPT_DIR/tb/testbench.sv" \
   +UVM_TESTNAME="${TEST}" \
   -svseed "${SEED}" \
   +UVM_VERBOSITY=UVM_MEDIUM \
@@ -63,7 +70,7 @@ xrun -64bit -sv \
   -assert \
   -coverage all \
   -covoverwrite \
-  -l "xrun_${TEST}_${SEED}.log"
+  -log "xrun_${TEST}_${SEED}.log"
 
 EXIT_CODE=$?
 echo "=================================================================="
